@@ -1,2 +1,1 @@
-A bunch of neural netowrk implementations from scratch.
-
+A bunch of small experiements with Pytorch and DNNs
