@@ -3,6 +3,7 @@ A simple fully-connected DNN built to classify images from the MNIST dataset
 """
 
 import csv
+import matplotlib.pyplot as plt
 import numpy as np
 import time
 import torch 
@@ -14,23 +15,23 @@ class Global:
     train_file = "data/train.csv"
     test_file = "data/test.csv"
     use_gpu = True
-    epochs = 100
-    batch_size = 2000
+    epochs = 500
+    batch_size = 7000
 
 class SimpleMNISTDNNModel(nn.Module):
 
     def __init__(self):
         super(SimpleMNISTDNNModel, self).__init__()
         self.fc1 = nn.Linear(28 * 28, 700)
-        self.fc2 = nn.Linear(700, 200)
-        self.fc3 = nn.Linear(200, 10)
-        #self.fc4 = nn.Linear(10, 10)
+        self.fc2 = nn.Linear(700, 700)
+        self.fc3 = nn.Linear(700, 200)
+        self.fc4 = nn.Linear(200, 10)
 
     def forward(self, x):
         x = F.relu(self.fc1(x))
         x = F.relu(self.fc2(x))
         x = F.relu(self.fc3(x))
-        # x = F.relu(self.fc4(x))
+        x = F.relu(self.fc4(x))
         return x
     
 
@@ -72,6 +73,7 @@ def main():
     curr_X = X
     curr_y = y
     starttime = time.time()
+    epoch_scores = []
     for epoch in range(Global.epochs):
         
         np.random.shuffle(idx)
@@ -109,9 +111,13 @@ def main():
             loss = loss_fn(output, curr_y_tensor)
 
             print("Epoch: {:03}, Loss = {:07}".format(epoch, loss))
+            epoch_scores.append(loss)
 
     secs = time.time() - starttime
     print(secs)
+
+    plt.plot([float(e) for e in epoch_scores])
+    plt.show()
 
 main()
 
